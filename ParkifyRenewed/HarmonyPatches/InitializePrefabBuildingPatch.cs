@@ -1,10 +1,10 @@
 using System;
 using System.Linq;
 using HarmonyLib;
-using Parkify.OptionsFramework;
-using Parkify.Utils;
+using ParkifyRenewed.OptionsFramework;
+using ParkifyRenewed.Utils;
 
-namespace Parkify.HarmonyPatches
+namespace ParkifyRenewed.HarmonyPatches
 {
     [HarmonyPatch]
     public static class InitializePrefabBuildingPatch

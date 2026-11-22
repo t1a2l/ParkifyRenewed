@@ -1,8 +1,9 @@
 ﻿using ColossalFramework;
 using HarmonyLib;
+using ParkifyRenewed;
 using UnityEngine;
 
-namespace Parkify.HarmonyPatches
+namespace ParkifyRenewed.HarmonyPatches
 {
     [HarmonyPatch]
     public static class PedestrianPathAIPatch
@@ -103,7 +104,7 @@ namespace Parkify.HarmonyPatches
 
                 BuildingInfo info = buildings[i].Info;
 
-                if (info == null || info.m_buildingAI is not ParkBuildingAI parkAI || !DistrictPark.IsParkType(parkAI.m_parkType))
+                if (info == null || info.m_buildingAI is not ParkBuildingAI parkAI || !Mod.IsParkType(parkAI.m_parkType))
                 {
                     continue;
                 }

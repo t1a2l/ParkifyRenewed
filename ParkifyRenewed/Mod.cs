@@ -5,13 +5,13 @@ using Parkify.OptionsFramework;
 using Parkify.Utils;
 using UnityEngine;
 
-namespace Parkify
+namespace ParkifyRenewed
 {
     public class Mod : LoadingExtensionBase, IUserMod
     {
         public string Name => "Parkify Renewed";
 
-        public string Description => "Allows to use the whole wealth of your park buildings as park modules";
+        public string Description => "Use park buildings as Parklife modules and place them in park, campus, industry, and airport areas.";
 
         private static bool initialized;
 
@@ -57,6 +57,11 @@ namespace Parkify
             }
 
             initialized = true;
+        }
+
+        public static bool IsParkType(DistrictPark.ParkType parkType)
+        {
+            return DistrictPark.IsParkType(parkType) || DistrictPark.IsCampusType(parkType) || DistrictPark.IsAirportType(parkType) || DistrictPark.IsIndustryType(parkType);
         }
 
         private static void PatchFishingToursProps()
@@ -110,6 +115,5 @@ namespace Parkify
             buildingInfo.m_props[15].m_radAngle = 1.5708f;
             buildingInfo.m_props[15].m_angle = 90;
         }
-
     }
 }

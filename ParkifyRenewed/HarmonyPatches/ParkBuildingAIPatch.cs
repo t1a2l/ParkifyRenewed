@@ -1,21 +1,58 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Reflection;
+using System.Reflection.Emit;
 using ColossalFramework;
 using ColossalFramework.Math;
 using HarmonyLib;
 using UnityEngine;
 
-namespace Parkify.HarmonyPatches
+namespace ParkifyRenewed.HarmonyPatches
 {
     [HarmonyPatch]
     public static class ParkBuildingAIPatch
     {
+        private static IEnumerable<MethodBase> TargetMethods()
+        {
+            yield return ParkMethod(nameof(ParkBuildingAI.CreateBuilding));
+            yield return ParkMethod(nameof(ParkBuildingAI.BuildingLoaded));
+            yield return ParkMethod(nameof(ParkBuildingAI.ReleaseBuilding));
+            yield return ParkMethod(nameof(ParkBuildingAI.BeginRelocating));
+            yield return ParkMethod(nameof(ParkBuildingAI.EndRelocating));
+            yield return ParkMethod(nameof(ParkBuildingAI.ParkAreaChanged));
+            yield return ParkMethod(nameof(ParkBuildingAI.CheckBuildPosition));
+            yield return ParkMethod(nameof(ParkBuildingAI.CheckRoadAccess));
+            yield return ParkMethod("HandleCrime");
+            yield return ParkMethod("HandleCommonConsumption");
+            yield return ParkMethod("HandleDead2");
+        }
+
+        [HarmonyTranspiler]
+        public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
+        {
+            var isParkGetter = AccessTools.PropertyGetter(typeof(DistrictPark), nameof(DistrictPark.IsPark));
+            var replacement = AccessTools.Method(typeof(ParkBuildingAIPatch), nameof(Mod.IsParkType));
+
+            foreach (var instruction in instructions)
+            {
+                if ((instruction.opcode == OpCodes.Call || instruction.opcode == OpCodes.Callvirt) && instruction.operand is MethodInfo method && method == isParkGetter)
+                {
+                    yield return new CodeInstruction(OpCodes.Call, replacement);
+                }
+                else
+                {
+                    yield return instruction;
+                }
+            }
+        }
+
         [HarmonyPatch(typeof(ParkBuildingAI), "FindRoadAccess")]
         [HarmonyPrefix]
         public static bool FindRoadAccessPrefix(ParkBuildingAI __instance, ushort buildingID, ref Building data, Vector3 position, ref ushort segmentID, ref bool __result, bool mostCloser = false, bool untouchable = true)
         {
             DistrictManager instance = Singleton<DistrictManager>.instance;
             byte b = instance.GetPark(data.m_position);
-            if (b != 0 && !instance.m_parks.m_buffer[b].IsPark)
+            if (b != 0 && !Mod.IsParkType(instance.m_parks.m_buffer[b].m_parkType))
             {
                 return true;
             }
@@ -85,7 +122,7 @@ namespace Parkify.HarmonyPatches
         [HarmonyPostfix]
         public static void RenderBuildOverlayPostfix(ParkBuildingAI __instance, RenderManager.CameraInfo cameraInfo, Color color, Vector3 position, float angle)
         {
-            bool isParkType = DistrictPark.IsParkType(__instance.m_parkType);
+            bool isParkType = Mod.IsParkType(__instance.m_parkType);
 
             if (isParkType && __instance.m_info.m_hasPedestrianPaths && Singleton<DistrictManager>.instance.GetPark(position) != 0)
             {
@@ -170,6 +207,12 @@ namespace Parkify.HarmonyPatches
                 Singleton<ToolManager>.instance.m_drawCallData.m_overlayCalls++;
                 Singleton<RenderManager>.instance.OverlayEffect.DrawQuad(cameraInfo, properties.m_directionArrow, color, quad, -10f, 1034f, renderLimits: false, alphaBlend: true);
             }
+        }
+
+        private static MethodBase ParkMethod(string name)
+        {
+            var method = AccessTools.DeclaredMethod(typeof(ParkBuildingAI), name) ?? throw new Exception($"ParkBuildingAI does not declare or override: {name}");
+            return method;
         }
     }
 }

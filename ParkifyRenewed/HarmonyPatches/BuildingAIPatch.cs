@@ -3,7 +3,7 @@ using System.Reflection.Emit;
 using HarmonyLib;
 using UnityEngine;
 
-namespace Parkify.HarmonyPatches
+namespace ParkifyRenewed.HarmonyPatches
 {
     [HarmonyPatch]
     public static class BuildingAIPatch
@@ -41,7 +41,7 @@ namespace Parkify.HarmonyPatches
         private static BuildingInfo.PlacementMode GetAlignmentPlacementMode(BuildingInfo info)
         {
             if (BuildingToolPatch.PathSnapEnabled && info.m_placementMode == BuildingInfo.PlacementMode.PathsideOrGround 
-                && info.m_buildingAI is ParkBuildingAI parkAI && DistrictPark.IsParkType(parkAI.m_parkType))
+                && info.m_buildingAI is ParkBuildingAI parkAI && Mod.IsParkType(parkAI.m_parkType))
             {
                 return BuildingInfo.PlacementMode.Roadside;
             }

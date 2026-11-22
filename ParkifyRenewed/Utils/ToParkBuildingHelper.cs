@@ -1,11 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
-using Parkify.OptionsFramework;
+using ParkifyRenewed.OptionsFramework;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
-namespace Parkify.Utils
+namespace ParkifyRenewed.Utils
 {
     public static class ToParkBuildingHelper
     {
@@ -38,7 +38,6 @@ namespace Parkify.Utils
             "Frozen Fountain"
         ];
 
-
         public static bool ShouldPatchMonument(BuildingInfo prefabInfo)
         {
             if (!OptionsWrapper<Options>.Options.PatchVanillaUniqueBuildings)
@@ -47,6 +46,28 @@ namespace Parkify.Utils
             }
 
             return prefabInfo.m_buildingAI is MonumentAI && MonumentExcludeList.Contains(prefabInfo.name);
+        }
+
+        public static void ParkifyIfNeeded(BuildingInfo prefabInfo)
+        {
+            if (prefabInfo.m_placementStyle == ItemClass.Placement.Procedural)
+            {
+                return;
+            }
+
+            if (!(prefabInfo.m_buildingAI?.GetType() == typeof(ParkAI) || prefabInfo.m_buildingAI is MonumentAI) || prefabInfo.name == null)
+            {
+                return;
+            }
+
+            if (prefabInfo.m_buildingAI is MonumentAI && !ShouldPatchMonument(prefabInfo))
+            {
+                return;
+            }
+
+            var parkType = GetParkType(prefabInfo.name);
+            ToParkBuildingInfo(prefabInfo, parkType);
+            Debug.Log($"Parkify - {prefabInfo?.name} was successfully parkified");
         }
 
         private static DistrictPark.ParkType GetParkType(string prefabInfoName)
@@ -78,29 +99,6 @@ namespace Parkify.Utils
 
             return DistrictPark.ParkType.Generic;
         }
-
-        public static void ParkifyIfNeeded(BuildingInfo prefabInfo)
-        {
-            if (prefabInfo.m_placementStyle == ItemClass.Placement.Procedural)
-            {
-                return;
-            }
-
-            if (!(prefabInfo.m_buildingAI?.GetType() == typeof(ParkAI) || prefabInfo.m_buildingAI is MonumentAI) || prefabInfo.name == null)
-            {
-                return;
-            }
-
-            if (prefabInfo.m_buildingAI is MonumentAI && !ShouldPatchMonument(prefabInfo))
-            {
-                return;
-            }
-
-            var parkType = GetParkType(prefabInfo.name);
-            ToParkBuildingInfo(prefabInfo, parkType);
-            Debug.Log($"Parkify - {prefabInfo?.name} was successfully parkified");
-        }
-
 
         private static void ToParkBuildingInfo(BuildingInfo prefabInfo, DistrictPark.ParkType parkType)
         {

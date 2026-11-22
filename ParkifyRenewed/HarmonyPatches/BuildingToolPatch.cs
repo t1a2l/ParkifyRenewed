@@ -3,7 +3,7 @@ using ColossalFramework;
 using HarmonyLib;
 using UnityEngine;
 
-namespace Parkify.HarmonyPatches
+namespace ParkifyRenewed.HarmonyPatches
 {
     [HarmonyPatch]
     public static class BuildingToolPatch
@@ -37,11 +37,9 @@ namespace Parkify.HarmonyPatches
 
             GetPrefabInfo(currentTool, out BuildingInfo info, out _);
 
-            Debug.Log($"[Parkify] SnapToPath: enabled={PathSnapEnabled}, prefab={currentTool.m_prefab?.name ?? "<null>"}, roadOnly={roadOnly}");
-
             if (info == null || info.m_buildingAI is not ParkBuildingAI ai) return true;
 
-            bool isParkType = DistrictPark.IsParkType(ai.m_parkType);
+            bool isParkType = Mod.IsParkType(ai.m_parkType);
             if (isParkType)
             {
                 roadOnly = false;

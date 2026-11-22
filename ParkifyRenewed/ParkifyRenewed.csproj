@@ -3,11 +3,11 @@
 	<PropertyGroup>
 		<TargetFramework>net35</TargetFramework>
 		<Deterministic>false</Deterministic>
-		<AssemblyTitle>Parkify</AssemblyTitle>
+		<AssemblyTitle>ParkifyRenewed</AssemblyTitle>
 		<AssemblyVersion>1.0.*</AssemblyVersion>
 		<GenerateAssemblyFileVersionAttribute>false</GenerateAssemblyFileVersionAttribute>
 		<LangVersion>preview</LangVersion>
-		<AssemblyName>Parkify</AssemblyName>
+		<AssemblyName>ParkifyRenewed</AssemblyName>
 	</PropertyGroup>
 	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
 		<DebugType>none</DebugType>

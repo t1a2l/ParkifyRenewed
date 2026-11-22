@@ -1,11 +1,11 @@
 ﻿using System.Reflection;
 using HarmonyLib;
 
-namespace Parkify.Utils
+namespace ParkifyRenewed.Utils
 {
     public static class Patcher
     {
-        private const string HarmonyId = "t1a2l.Parkify";
+        private const string HarmonyId = "t1a2l.ParkifyRenewed";
 
         private static bool patched = false;
 
@@ -16,13 +16,13 @@ namespace Parkify.Utils
                 return;
             }
 
-            UnityEngine.Debug.Log("Parkify: Patching...");
+            UnityEngine.Debug.Log("Parkify Renewed: Patching...");
 
             patched = true;
 
             // Apply your patches here!
             // Harmony.DEBUG = true;
-            var harmony = new Harmony("t1a2l.Parkify");
+            var harmony = new Harmony("t1a2l.ParkifyRenewed");
             harmony.PatchAll(Assembly.GetExecutingAssembly());
         }
 
@@ -38,7 +38,7 @@ namespace Parkify.Utils
 
             patched = false;
 
-            UnityEngine.Debug.Log("Parkify: Reverted...");
+            UnityEngine.Debug.Log("Parkify Renewed: Reverted...");
         }
     }
 

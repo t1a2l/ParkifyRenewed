@@ -1,12 +1,11 @@
 ﻿using System.Xml.Serialization;
-using Parkify.OptionsFramework.Attibutes;
+using ParkifyRenewed.OptionsFramework.Attibutes;
 
-namespace Parkify.Utils
+namespace ParkifyRenewed.Utils
 {
     [Options("Parkify")]
     public class Options
     {
-
         public Options()
         {
             PatchVanillaUniqueBuildings = false;
