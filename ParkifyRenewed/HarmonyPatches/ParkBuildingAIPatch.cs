@@ -28,7 +28,7 @@ namespace ParkifyRenewed.HarmonyPatches
         public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
         {
             var isParkGetter = AccessTools.PropertyGetter(typeof(DistrictPark), nameof(DistrictPark.IsPark));
-            var replacement = AccessTools.Method(typeof(Mod), nameof(Mod.IsParkType));
+            var replacement = AccessTools.Method(typeof(ParkBuildingAIPatch), nameof(IsSupportedArea));
 
             foreach (var instruction in instructions)
             {
@@ -47,6 +47,11 @@ namespace ParkifyRenewed.HarmonyPatches
         {
             var method = AccessTools.DeclaredMethod(typeof(ParkBuildingAI), name) ?? throw new Exception($"ParkBuildingAI does not declare or override: {name}");
             return method;
+        }
+
+        private static bool IsSupportedArea(ref DistrictPark park)
+        {
+            return Mod.IsParkType(park.m_parkType);
         }
     }
 }
