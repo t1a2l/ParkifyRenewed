@@ -1,8 +1,8 @@
 ﻿using System.Linq;
 using CitiesHarmony.API;
 using ICities;
-using Parkify.OptionsFramework;
-using Parkify.Utils;
+using ParkifyRenewed.OptionsFramework;
+using ParkifyRenewed.Utils;
 using UnityEngine;
 
 namespace ParkifyRenewed
