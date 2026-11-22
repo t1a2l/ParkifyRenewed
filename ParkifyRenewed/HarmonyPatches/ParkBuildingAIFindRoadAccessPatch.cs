@@ -33,9 +33,29 @@ namespace ParkifyRenewed.HarmonyPatches
                 return true;
             }
 
+            bool isCampus = b != 0 && DistrictPark.IsCampusType(instance.m_parks.m_buffer[b].m_parkType);
+
             if (!__instance.m_info.m_hasPedestrianPaths)
             {
-                return true;
+                if (!isCampus)
+                {
+                    return true;
+                }
+
+                // A campus park without internal paths must connect to a
+                // nearby campus path rather than a road.
+                if (!FindSegment(position, ref segmentID))
+                {
+                    data.m_flags |= Building.Flags.RoadAccessFailed;
+                    segmentID = 0;
+                    __result = false;
+                }
+                else
+                {
+                    __result = true;
+                }
+
+                return false;
             }
 
             NetManager instance2 = Singleton<NetManager>.instance;
