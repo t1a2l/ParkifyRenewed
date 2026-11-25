@@ -19,6 +19,7 @@ namespace ParkifyRenewed.HarmonyPatches
             yield return ParkMethod(nameof(ParkBuildingAI.ParkAreaChanged));
             yield return ParkMethod(nameof(ParkBuildingAI.CheckBuildPosition));
             yield return ParkMethod(nameof(ParkBuildingAI.CheckRoadAccess));
+            yield return ParkMethod("FindRoadAccess");
             yield return ParkMethod("HandleCrime");
             yield return ParkMethod("HandleCommonConsumption");
             yield return ParkMethod("HandleDead2");
@@ -34,12 +35,11 @@ namespace ParkifyRenewed.HarmonyPatches
             {
                 if ((instruction.opcode == OpCodes.Call || instruction.opcode == OpCodes.Callvirt) && instruction.operand is MethodInfo method && method == isParkGetter)
                 {
-                    yield return new CodeInstruction(OpCodes.Call, replacement);
+                    instruction.opcode = OpCodes.Call;
+                    instruction.operand = replacement;
                 }
-                else
-                {
-                    yield return instruction;
-                }
+
+                yield return instruction;
             }
         }
 
